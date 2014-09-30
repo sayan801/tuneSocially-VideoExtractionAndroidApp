@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="#000000"
+    android:background="#d3d3d3"
     tools:context=".MainActivity" >
 
     <Button
@@ -18,7 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_centerInParent="true"
         android:layout_marginTop="154dp"
-        android:text="@string/chooseVid" />
+        android:text="@string/chooseVideo" />
 
     <Button
         android:id="@+id/exitButton"

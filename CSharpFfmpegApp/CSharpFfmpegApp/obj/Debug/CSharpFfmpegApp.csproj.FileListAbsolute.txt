@@ -1,0 +1,14 @@
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\bin\Debug\CSharpFfmpegApp.exe.config
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\bin\Debug\CSharpFfmpegApp.exe
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\bin\Debug\CSharpFfmpegApp.pdb
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\MainWindow.baml
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\MainWindow.g.cs
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\App.g.cs
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp_MarkupCompile.cache
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.g.resources
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.Properties.Resources.resources
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.csproj.GenerateResource.Cache
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.exe
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.pdb
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\bin\Debug\Appsetting.config
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\CSharpFfmpegApp\CSharpFfmpegApp\obj\Debug\CSharpFfmpegApp.csprojResolveAssemblyReference.cache

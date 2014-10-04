@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
 import android.net.Uri;
@@ -155,12 +156,28 @@ import android.widget.Toast;
 	
 	 private boolean cloneMediaUsingMuxer(String filePath, String dstMediaPath,int expectedTrackCount, int degrees) throws IOException 
 	 {
-		 final String COMPRESSED_AUDIO_FILE_MIME_TYPE = "audio/mp4a-latm";
-		 final int COMPRESSED_AUDIO_FILE_BIT_RATE = 128000; // 128kbps
-		 final int SAMPLING_RATE = 44100;
+		 //String COMPRESSED_AUDIO_FILE_MIME_TYPE ;
+		 //int COMPRESSED_AUDIO_FILE_BIT_RATE ; // 128kbps
+		 //int SAMPLING_RATE;
+         final String COMPRESSED_AUDIO_FILE_MIME_TYPE = "audio/mp4a-latm";
+         final int COMPRESSED_AUDIO_FILE_BIT_RATE = 128000; // 128kbps
+         final int SAMPLING_RATE = 44100;
 		 final int CODEC_TIMEOUT_IN_MS = 5000;
 		 final int BUFFER_SIZE = 88200;
 		 boolean suc=false;
+
+         /*
+         MediaExtractor extractor;
+         extractor = new MediaExtractor();
+
+             extractor.setDataSource(filePath);
+             MediaFormat format = extractor.getTrackFormat(0);
+             COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
+             COMPRESSED_AUDIO_FILE_BIT_RATE= Integer.parseInt(format.getString(MediaFormat.KEY_BIT_RATE));
+             SAMPLING_RATE = Integer.parseInt(format.getString(MediaFormat.KEY_SAMPLE_RATE));
+         */
+
+
 		 	
 		 try {
 		        File inputFile = new File(filePath);
@@ -259,7 +276,11 @@ import android.widget.Toast;
 		    } catch (IOException e) {
 		        Log.e(TAG, "IO exception!", e);
 		        suc=false;
-		    }
+		    } catch (Exception ex)
+             {
+                 Toast.makeText(getApplicationContext(), "MediaExtractor Exception :" + ex.getMessage(), Toast.LENGTH_LONG).show();
+             }
+
 
 		   
 		   return suc;

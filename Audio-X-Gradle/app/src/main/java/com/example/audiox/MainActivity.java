@@ -53,7 +53,7 @@ import android.widget.Toast;
     			Uri uri=data.getData();
     			String path=getPath(uri);
     			Toast.makeText(getApplicationContext(), path, Toast.LENGTH_LONG).show();
-    			
+                Log.v(TAG, "Path % - "+ path);
     			createNewFolder();
     			
     			boolean res=false;
@@ -159,24 +159,26 @@ import android.widget.Toast;
 		 //String COMPRESSED_AUDIO_FILE_MIME_TYPE ;
 		 //int COMPRESSED_AUDIO_FILE_BIT_RATE ; // 128kbps
 		 //int SAMPLING_RATE;
-         final String COMPRESSED_AUDIO_FILE_MIME_TYPE = "audio/mp4a-latm";
-         final int COMPRESSED_AUDIO_FILE_BIT_RATE = 128000; // 128kbps
-         final int SAMPLING_RATE = 44100;
+         String COMPRESSED_AUDIO_FILE_MIME_TYPE;// = "audio/mp4a-latm";
+         int COMPRESSED_AUDIO_FILE_BIT_RATE; // = 128000; // 128kbps
+         int SAMPLING_RATE;// = 44100;
 		 final int CODEC_TIMEOUT_IN_MS = 5000;
 		 final int BUFFER_SIZE = 88200;
 		 boolean suc=false;
 
-         /*
+
          MediaExtractor extractor;
          extractor = new MediaExtractor();
 
              extractor.setDataSource(filePath);
              MediaFormat format = extractor.getTrackFormat(0);
              COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
-             COMPRESSED_AUDIO_FILE_BIT_RATE= Integer.parseInt(format.getString(MediaFormat.KEY_BIT_RATE));
-             SAMPLING_RATE = Integer.parseInt(format.getString(MediaFormat.KEY_SAMPLE_RATE));
-         */
+             COMPRESSED_AUDIO_FILE_BIT_RATE= format.getInteger(MediaFormat.KEY_BIT_RATE);
+             SAMPLING_RATE = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+             int channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+             long duration = format.getLong(MediaFormat.KEY_DURATION);
 
+         Log.d(TAG, "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration);
 
 		 	
 		 try {

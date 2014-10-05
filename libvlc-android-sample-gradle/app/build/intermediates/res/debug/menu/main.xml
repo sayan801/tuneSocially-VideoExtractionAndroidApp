@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_refresh"
+        android:showAsAction="ifRoom"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_menu_refresh"
+        />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+</menu>
+<!-- From: file:/D:/ChandraPersonal/GitHub/VideoExtractionAndroidApp/libvlc-android-sample-gradle/app/src/main/res/menu/main.xml -->

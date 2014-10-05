@@ -495,7 +495,7 @@ namespace CSharpFfmpegApp
             OutputPackage ou = new OutputPackage();
 
             
-            String filename = System.Guid.NewGuid().ToString() + ".wav";
+            String filename = System.Guid.NewGuid().ToString() + ".mp3";
 
             String finalpath = System.IO.Path.Combine(this.WorkingPath, filename);
 

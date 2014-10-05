@@ -1,0 +1,10 @@
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\bin\Debug\AviDemo.exe
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\bin\Debug\AviDemo.pdb
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\bin\Debug\AviFile.dll
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\bin\Debug\AviFile.pdb
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.csprojResolveAssemblyReference.cache
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.ExploreControl.resources
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.FrameRateForm.resources
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.csproj.GenerateResource.Cache
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.exe
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviDemo\obj\Debug\AviDemo.pdb

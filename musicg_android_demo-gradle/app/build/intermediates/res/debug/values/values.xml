@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/D:/ChandraPersonal/GitHub/VideoExtractionAndroidApp/musicg_android_demo-gradle/app/src/main/res/values/dimens.xml -->
+    <eat-comment />
+
+    <dimen name="padding_large">16dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <!-- From: file:/D:/ChandraPersonal/GitHub/VideoExtractionAndroidApp/musicg_android_demo-gradle/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <string name="app_name">musicg WhistleAPI Demo</string>
+    <string name="title_activity_main">musicg WhistleAPI Demo</string>
+    <!-- From: file:/D:/ChandraPersonal/GitHub/VideoExtractionAndroidApp/musicg_android_demo-gradle/app/src/main/res/values/styles.xml -->
+    <eat-comment />
+
+    <style name="AppTheme" parent="android:Theme.Light" />
+
+</resources>

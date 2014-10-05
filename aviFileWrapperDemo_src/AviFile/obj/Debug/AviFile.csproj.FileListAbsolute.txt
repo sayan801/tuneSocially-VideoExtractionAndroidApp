@@ -1,0 +1,5 @@
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviFile\bin\Debug\AviFile.dll
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviFile\bin\Debug\AviFile.pdb
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviFile\obj\Debug\AviFile.csprojResolveAssemblyReference.cache
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviFile\obj\Debug\AviFile.dll
+D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\aviFileWrapperDemo_src\AviFile\obj\Debug\AviFile.pdb

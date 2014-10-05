@@ -11,6 +11,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
 import android.media.MediaExtractor;
@@ -153,7 +156,168 @@ import android.widget.Toast;
         }
         	return s;
     }
-	
+
+    private void decodeLoop(MediaExtractor extractor ,MediaFormat format)
+    {
+
+        ByteBuffer[] codecInputBuffers;
+        ByteBuffer[] codecOutputBuffers;
+
+        String mime = format.getString(MediaFormat.KEY_MIME);
+
+        // the actual decoder
+        MediaCodec codec = MediaCodec.createDecoderByType(mime);
+        codec.configure(format, null /* surface */, null /* crypto */, 0 /* flags */);
+        codec.start();
+        codecInputBuffers = codec.getInputBuffers();
+        codecOutputBuffers = codec.getOutputBuffers();
+
+        // get the sample rate to configure AudioTrack
+        int sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+
+        // create our AudioTrack instance
+       /*
+        AudioTrack audioTrack = new AudioTrack(
+                AudioManager.USE_DEFAULT_STREAM_TYPE,
+                sampleRate,
+                AudioFormat.CHANNEL_OUT_STEREO,
+                AudioFormat.ENCODING_PCM_16BIT,
+                AudioTrack.getMinBufferSize (
+                        sampleRate,
+                        AudioFormat.CHANNEL_OUT_STEREO,
+                        AudioFormat.ENCODING_PCM_16BIT
+                ),
+                AudioTrack.MODE_STREAM
+        );
+
+        // start playing, we will feed you later
+        audioTrack.play();
+        */
+        //extractor.selectTrack(0);
+
+        // start decoding
+        final long kTimeOutUs = 10000;
+        MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+        boolean sawInputEOS = false;
+        boolean sawOutputEOS = false;
+        int noOutputCounter = 0;
+        int noOutputCounterLimit = 50;
+
+        //previously global varibale
+        Boolean doStop = false;
+        int inputBufIndex;
+        int bufIndexCheck = 0;
+        int lastInputBufIndex;
+
+        while (!sawOutputEOS && noOutputCounter < noOutputCounterLimit && !doStop) {
+            //Log.i(LOG_TAG, "loop ");
+            noOutputCounter++;
+            if (!sawInputEOS) {
+
+                inputBufIndex = codec.dequeueInputBuffer(kTimeOutUs);
+                bufIndexCheck++;
+                // Log.d(LOG_TAG, " bufIndexCheck " + bufIndexCheck);
+                if (inputBufIndex >= 0) {
+                    ByteBuffer dstBuf = codecInputBuffers[inputBufIndex];
+
+                    int sampleSize =
+                            extractor.readSampleData(dstBuf, 0 /* offset */);
+
+                    long presentationTimeUs = 0;
+
+                    if (sampleSize < 0) {
+                        Log.d(TAG, "saw input EOS.");
+                        sawInputEOS = true;
+                        sampleSize = 0;
+                    } else {
+                        presentationTimeUs = extractor.getSampleTime();
+                    }
+                    // can throw illegal state exception (???)
+
+                    codec.queueInputBuffer(
+                            inputBufIndex,
+                            0 /* offset */,
+                            sampleSize,
+                            presentationTimeUs,
+                            sawInputEOS ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
+
+
+
+                    if (!sawInputEOS) {
+                        extractor.advance();
+                    }
+                }
+                else
+                {
+                    Log.e(TAG, "inputBufIndex " +inputBufIndex);
+                }
+            }
+
+            int res = codec.dequeueOutputBuffer(info, kTimeOutUs);
+
+
+            /*
+            if (res >= 0) {
+                //Log.d(LOG_TAG, "got frame, size " + info.size + "/" + info.presentationTimeUs);
+                if (info.size > 0) {
+                    noOutputCounter = 0;
+                }
+
+                int outputBufIndex = res;
+                ByteBuffer buf = codecOutputBuffers[outputBufIndex];
+
+                final byte[] chunk = new byte[info.size];
+                buf.get(chunk);
+                buf.clear();
+                if(chunk.length > 0){
+                    audioTrack.write(chunk,0,chunk.length);
+                    if(this.mState != State.Playing)
+                    {
+                        mDelegateHandler.onRadioPlayerPlaybackStarted(MP3RadioStreamPlayer.this);
+                    }
+                    this.mState = State.Playing;
+                }
+                codec.releaseOutputBuffer(outputBufIndex, false);
+                if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                    Log.d(LOG_TAG, "saw output EOS.");
+                    sawOutputEOS = true;
+                }
+            } else if (res == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                codecOutputBuffers = codec.getOutputBuffers();
+
+                Log.d(LOG_TAG, "output buffers have changed.");
+            } else if (res == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                MediaFormat oformat = codec.getOutputFormat();
+
+                Log.d(LOG_TAG, "output format has changed to " + oformat);
+            } else {
+                Log.d(LOG_TAG, "dequeueOutputBuffer returned " + res);
+            }
+            */
+        }
+
+        /*
+        Log.d(LOG_TAG, "stopping...");
+
+        relaxResources(true);
+
+        this.mState = State.Stopped;
+        doStop = true;
+
+        // attempt reconnect
+        if(sawOutputEOS)
+        {
+            try {
+                MP3RadioStreamPlayer.this.play();
+                return;
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        */
+    }
+
 	 private boolean cloneMediaUsingMuxer(String filePath, String dstMediaPath,int expectedTrackCount, int degrees) throws IOException 
 	 {
 		 //String COMPRESSED_AUDIO_FILE_MIME_TYPE ;
@@ -184,11 +348,16 @@ import android.widget.Toast;
              MediaFormat format = extractor.getTrackFormat(i);
              COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
 
-             if(COMPRESSED_AUDIO_FILE_MIME_TYPE.contains("audio")) {
+             if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
                  //COMPRESSED_AUDIO_FILE_BIT_RATE = format.getInteger(MediaFormat.KEY_BIT_RATE);
                  SAMPLING_RATE = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
                  channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
                  duration = format.getLong(MediaFormat.KEY_DURATION);
+
+                 extractor.selectTrack(i);
+
+                 decodeLoop(extractor , format);
+
              }
 
              String audioInfo = "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration;

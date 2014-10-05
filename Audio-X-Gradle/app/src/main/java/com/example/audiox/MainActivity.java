@@ -207,16 +207,20 @@ import android.widget.Toast;
         Boolean doStop = false;
         int inputBufIndex;
         int bufIndexCheck = 0;
-        int lastInputBufIndex;
+        //int lastInputBufIndex;
 
         while (!sawOutputEOS && noOutputCounter < noOutputCounterLimit && !doStop) {
             //Log.i(LOG_TAG, "loop ");
             noOutputCounter++;
+
             if (!sawInputEOS) {
 
                 inputBufIndex = codec.dequeueInputBuffer(kTimeOutUs);
+
                 bufIndexCheck++;
-                // Log.d(LOG_TAG, " bufIndexCheck " + bufIndexCheck);
+
+                Log.d(TAG, " bufIndexCheck " + bufIndexCheck + " inputBufIndex " + inputBufIndex);
+
                 if (inputBufIndex >= 0) {
                     ByteBuffer dstBuf = codecInputBuffers[inputBufIndex];
 
@@ -224,6 +228,8 @@ import android.widget.Toast;
                             extractor.readSampleData(dstBuf, 0 /* offset */);
 
                     long presentationTimeUs = 0;
+
+                    Log.d(TAG, " sampleSize " + sampleSize + " inputBufIndex " + inputBufIndex);
 
                     if (sampleSize < 0) {
                         Log.d(TAG, "saw input EOS.");
@@ -241,6 +247,7 @@ import android.widget.Toast;
                             presentationTimeUs,
                             sawInputEOS ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
 
+                    Log.d(TAG, " sawInputEOS " + sawInputEOS + " presentationTimeUs " + presentationTimeUs);
 
 
                     if (!sawInputEOS) {
@@ -253,10 +260,12 @@ import android.widget.Toast;
                 }
             }
 
+            /*
+
             int res = codec.dequeueOutputBuffer(info, kTimeOutUs);
 
 
-            /*
+
             if (res >= 0) {
                 //Log.d(LOG_TAG, "got frame, size " + info.size + "/" + info.presentationTimeUs);
                 if (info.size > 0) {
@@ -295,6 +304,8 @@ import android.widget.Toast;
             }
             */
         }
+
+        Log.e(TAG, "inputBuf length " + codecInputBuffers.length);
 
         /*
         Log.d(LOG_TAG, "stopping...");

@@ -41,7 +41,7 @@ import android.widget.Toast;
         
         //SET UP BUTTON CLICK LISTENERS
         ((Button)findViewById(R.id.chooseVid)).setOnClickListener(this);
-        ((Button)findViewById(R.id.exitButton)).setOnClickListener(this);
+
     }
 
     public void onActivityResult(int requestCode,int resultCode,Intent data)
@@ -62,18 +62,20 @@ import android.widget.Toast;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-    			if(res)
+    			/*
+                if(res)
     			{
-    				TextView tv=(TextView)findViewById(R.id.textView1);
+    				TextView tv=(TextView)findViewById(R.id.audioResultsTextView);
     				tv.setVisibility(1);
     				tv.setText("Success");
     			}
     			else
     			{
-    				TextView tv=(TextView)findViewById(R.id.textView1);
+    				TextView tv=(TextView)findViewById(R.id.audioResultsTextView);
     				tv.setVisibility(1);
     				tv.setText("Failed");
     			}
+    			*/
     		}
     	}
     }
@@ -114,14 +116,14 @@ import android.widget.Toast;
             }
             else
             {
-            	TextView tv=(TextView)findViewById(R.id.textView1);
+            	TextView tv=(TextView)findViewById(R.id.audioResultsTextView);
     			tv.setVisibility(1);
     			tv.setText(targetPath);
             }
         }
         else
         {
-        	TextView tv=(TextView)findViewById(R.id.textView1);
+        	TextView tv=(TextView)findViewById(R.id.audioResultsTextView);
 			tv.setVisibility(1);
 			tv.setText(targetPath);
         }
@@ -134,8 +136,6 @@ import android.widget.Toast;
 		case R.id.chooseVid:	Intent intent=new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
 								startActivityForResult(intent,chooseVid);
 			break;
-		case R.id.exitButton:	this.finish();
-		break;
 		}
 		
 	}
@@ -159,28 +159,46 @@ import android.widget.Toast;
 		 //String COMPRESSED_AUDIO_FILE_MIME_TYPE ;
 		 //int COMPRESSED_AUDIO_FILE_BIT_RATE ; // 128kbps
 		 //int SAMPLING_RATE;
-         String COMPRESSED_AUDIO_FILE_MIME_TYPE;// = "audio/mp4a-latm";
-         int COMPRESSED_AUDIO_FILE_BIT_RATE; // = 128000; // 128kbps
-         int SAMPLING_RATE;// = 44100;
-		 final int CODEC_TIMEOUT_IN_MS = 5000;
+         String COMPRESSED_AUDIO_FILE_MIME_TYPE = null;// = "audio/mp4a-latm";
+         int COMPRESSED_AUDIO_FILE_BIT_RATE = 0; // = 128000; // 128kbps
+         int SAMPLING_RATE = 0;// = 44100;
+         int channels = 0;
+         long duration = 0;
+         final int CODEC_TIMEOUT_IN_MS = 5000;
 		 final int BUFFER_SIZE = 88200;
 		 boolean suc=false;
 
 
+         TextView tv=(TextView)findViewById(R.id.videoFilePathTextView);
+         tv.setVisibility(1);
+         tv.setText(filePath);
+
          MediaExtractor extractor;
+
          extractor = new MediaExtractor();
+         extractor.setDataSource(filePath);
 
-             extractor.setDataSource(filePath);
-             MediaFormat format = extractor.getTrackFormat(0);
+         int numTracks = extractor.getTrackCount();
+         for (int i = 0; i < numTracks; ++i) {
+
+             MediaFormat format = extractor.getTrackFormat(i);
              COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
-             COMPRESSED_AUDIO_FILE_BIT_RATE= format.getInteger(MediaFormat.KEY_BIT_RATE);
-             SAMPLING_RATE = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
-             int channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
-             long duration = format.getLong(MediaFormat.KEY_DURATION);
 
-         Log.d(TAG, "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration);
+             if(COMPRESSED_AUDIO_FILE_MIME_TYPE.contains("audio")) {
+                 //COMPRESSED_AUDIO_FILE_BIT_RATE = format.getInteger(MediaFormat.KEY_BIT_RATE);
+                 SAMPLING_RATE = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
+                 channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
+                 duration = format.getLong(MediaFormat.KEY_DURATION);
+             }
 
-		 	
+             String audioInfo = "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration;
+             Log.d(TAG, audioInfo);
+
+             TextView tv1 = (TextView) findViewById(R.id.audioResultsTextView);
+             tv1.setVisibility(1);
+             tv1.setText( tv1.getText()+ " -- " + audioInfo);
+         }
+		 /*
 		 try {
 		        File inputFile = new File(filePath);
 		        FileInputStream fis = new FileInputStream(inputFile);
@@ -282,7 +300,7 @@ import android.widget.Toast;
              {
                  Toast.makeText(getApplicationContext(), "MediaExtractor Exception :" + ex.getMessage(), Toast.LENGTH_LONG).show();
              }
-
+            */
 
 		   
 		   return suc;

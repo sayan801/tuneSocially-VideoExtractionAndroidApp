@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-044724e369b6818a5f041a749d0be30ddf5d7c31.jar"
+        jar="D:\Chandra\adt\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\app\build\intermediates\pre-dexed\debug\jave-1.0.2-14c619dd5efa4266802ae3f458edcfd0ef5c4a58.jar"
+        jar="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\app\libs\jave-1.0.2.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="646f6c25b8f62d5634f7eed3f4a634edc9b50475"/>
+
+</pre-dex-items>

@@ -335,7 +335,7 @@ import android.widget.Toast;
 		 //int COMPRESSED_AUDIO_FILE_BIT_RATE ; // 128kbps
 		 //int SAMPLING_RATE;
          String COMPRESSED_AUDIO_FILE_MIME_TYPE = null;// = "audio/mp4a-latm";
-         int COMPRESSED_AUDIO_FILE_BIT_RATE = 0; // = 128000; // 128kbps
+         int COMPRESSED_AUDIO_FILE_BIT_RATE = 128000; // 128kbps
          int SAMPLING_RATE = 0;// = 44100;
          int channels = 0;
          long duration = 0;
@@ -354,6 +354,20 @@ import android.widget.Toast;
          extractor.setDataSource(filePath);
 
          int numTracks = extractor.getTrackCount();
+
+         File outputFile = new File(dstMediaPath);
+         if (outputFile.exists())
+             outputFile.delete();
+
+         MediaMuxer mux = new MediaMuxer(outputFile.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+
+         MediaFormat outputFormat = MediaFormat.createAudioFormat(COMPRESSED_AUDIO_FILE_MIME_TYPE,SAMPLING_RATE, 1);
+         outputFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
+         outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, COMPRESSED_AUDIO_FILE_BIT_RATE);
+
+         int audioTrackIdx = mux.addTrack(outputFormat);
+         mux.start();
+
          for (int i = 0; i < numTracks; ++i) {
 
              MediaFormat format = extractor.getTrackFormat(i);
@@ -367,11 +381,137 @@ import android.widget.Toast;
 
                  extractor.selectTrack(i);
 
-                 decodeLoop(extractor , format);
+                 //decodeLoop(extractor , format);
 
+                 //openmxplayer style
+
+                 MediaCodec codec;
+
+                 // create the actual decoder, using the mime to select
+                 codec = MediaCodec.createDecoderByType(COMPRESSED_AUDIO_FILE_MIME_TYPE);
+                 // check we have a valid codec instance
+                 if (codec == null) {
+
+                     Log.d(TAG, "codec is null.. :-( ");
+                     return false;
+                 }
+
+                 codec.configure(format, null, null, 0);
+                 codec.start();
+                 ByteBuffer[] codecInputBuffers  = codec.getInputBuffers();
+                 ByteBuffer[] codecOutputBuffers = codec.getOutputBuffers();
+
+                 // configure AudioTrack
+                /*
+                 int channelConfiguration = channels == 1 ? AudioFormat.CHANNEL_OUT_MONO : AudioFormat.CHANNEL_OUT_STEREO;
+                 int minSize = AudioTrack.getMinBufferSize( SAMPLING_RATE, channelConfiguration, AudioFormat.ENCODING_PCM_16BIT);
+                 audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, SAMPLING_RATE, channelConfiguration,
+                         AudioFormat.ENCODING_PCM_16BIT, minSize, AudioTrack.MODE_STREAM);
+
+                 // start playing, we will feed the AudioTrack later
+                 audioTrack.play();
+                 extractor.selectTrack(0);
+                 */
+
+                 // start decoding
+                 final long kTimeOutUs = 1000;
+                 MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
+                 boolean sawInputEOS = false;
+                 boolean sawOutputEOS = false;
+                 int noOutputCounter = 0;
+                 int noOutputCounterLimit = 10;
+                 boolean stop = false;
+                 long presentationTimeUs = 0;
+
+                // state.set(PlayerStates.PLAYING);
+                 while (!sawOutputEOS && noOutputCounter < noOutputCounterLimit && !stop) {
+
+
+                     noOutputCounter++;
+                     // read a buffer before feeding it to the decoder
+                     if (!sawInputEOS) {
+                         int inputBufIndex = codec.dequeueInputBuffer(kTimeOutUs);
+                         if (inputBufIndex >= 0) {
+                             ByteBuffer dstBuf = codecInputBuffers[inputBufIndex];
+                             int sampleSize = extractor.readSampleData(dstBuf, 0);
+                             if (sampleSize < 0) {
+                                 Log.d(TAG, "saw input EOS. Stopping playback");
+                                 sawInputEOS = true;
+                                 sampleSize = 0;
+                             } else {
+                                 presentationTimeUs = extractor.getSampleTime();
+                                 final int percent =  (duration == 0)? 0 : (int) (100 * presentationTimeUs / duration);
+                                 Log.d(TAG, "percent " + percent + " presentationTimeUs " + presentationTimeUs);
+                             }
+
+                             codec.queueInputBuffer(inputBufIndex, 0, sampleSize, presentationTimeUs, sawInputEOS ? MediaCodec.BUFFER_FLAG_END_OF_STREAM : 0);
+
+                             if (!sawInputEOS) extractor.advance();
+
+                         } else {
+                             Log.e(TAG, "inputBufIndex " +inputBufIndex);
+                         }
+                     } // !sawInputEOS
+
+                     // decode to PCM and push it to the AudioTrack player
+                     int res = codec.dequeueOutputBuffer(info, kTimeOutUs);
+
+                     if (res >= 0) {
+                         if (info.size > 0)  noOutputCounter = 0;
+
+                         int outputBufIndex = res;
+                         //ByteBuffer buf = codecOutputBuffers[outputBufIndex];
+                         mux.writeSampleData(audioTrackIdx, codecOutputBuffers[outputBufIndex], info);
+
+                     /*
+                         final byte[] chunk = new byte[info.size];
+                         buf.get(chunk);
+                         buf.clear();
+                         if(chunk.length > 0){
+                             audioTrack.write(chunk,0,chunk.length);
+
+                	}*/
+                         codec.releaseOutputBuffer(res, false);
+                         if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
+                             Log.d(TAG, "saw output EOS.");
+                             sawOutputEOS = true;
+                         }
+                     } else if (res == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
+                         codecOutputBuffers = codec.getOutputBuffers();
+                         Log.d(TAG, "output buffers have changed.");
+                     } else if (res == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
+                         MediaFormat oformat = codec.getOutputFormat();
+                         Log.d(TAG, "output format has changed to " + oformat);
+                     } else {
+                         Log.d(TAG, "dequeueOutputBuffer returned " + res);
+                     }
+                 }
+
+                 Log.d(TAG, "stopping...");
+
+                 if(codec != null) {
+                     codec.stop();
+                     codec.release();
+                     codec = null;
+                 }
+
+
+                 // clear source and the other globals
+                 /*
+                 sourcePath = null;
+                 sourceRawResId = -1;
+                 duration = 0;
+                 mime = null;
+                 sampleRate = 0; channels = 0; bitrate = 0;
+                 presentationTimeUs = 0; duration = 0;
+                 */
              }
 
-             String audioInfo = "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration;
+             mux.stop();
+             mux.release();
+
+             String audioInfo = "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + "" +
+                     " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration;
              Log.d(TAG, audioInfo);
 
              TextView tv1 = (TextView) findViewById(R.id.audioResultsTextView);

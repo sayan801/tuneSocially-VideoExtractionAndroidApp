@@ -122,8 +122,8 @@
       <file leaf-file-name="OpenMXPlayer.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/openMXPlayer/src/main/java/net/pocketmagic/android/openmxplayer/OpenMXPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.95961994" vertical-offset="2949" max-vertical-offset="5219">
-              <caret line="251" column="66" selection-start-line="251" selection-start-column="66" selection-end-line="251" selection-end-column="66" />
+            <state vertical-scroll-proportion="0.4536817" vertical-offset="298" max-vertical-offset="5219">
+              <caret line="54" column="31" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -1963,8 +1963,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/openMXPlayer/src/main/java/net/pocketmagic/android/openmxplayer/OpenMXPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.95961994" vertical-offset="2949" max-vertical-offset="5219">
-          <caret line="251" column="66" selection-start-line="251" selection-start-column="66" selection-end-line="251" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.4536817" vertical-offset="298" max-vertical-offset="5219">
+          <caret line="54" column="31" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="31" />
           <folding />
         </state>
       </provider>

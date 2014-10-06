@@ -2,10 +2,10 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\assets" />
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\assets" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\debug\assets" />
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\debug\assets" />
     </dataSet>
 
 </merger>

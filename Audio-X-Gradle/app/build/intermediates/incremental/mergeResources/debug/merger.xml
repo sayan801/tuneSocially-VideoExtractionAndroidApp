@@ -2,39 +2,39 @@
 <merger version="2" >
 
     <dataSet config="main" >
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res" >
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res" >
             <file
                 name="ic_launcher"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-hdpi\ic_launcher.png"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-hdpi\ic_launcher.png"
                 qualifiers="hdpi-v4"
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-mdpi\ic_launcher.png"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-mdpi\ic_launcher.png"
                 qualifiers="mdpi-v4"
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-xhdpi\ic_launcher.png"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-xhdpi\ic_launcher.png"
                 qualifiers="xhdpi-v4"
                 type="drawable" />
             <file
                 name="ic_launcher"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-xxhdpi\ic_launcher.png"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\drawable-xxhdpi\ic_launcher.png"
                 qualifiers="xxhdpi-v4"
                 type="drawable" />
             <file
                 name="activity_main"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\layout\activity_main.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\layout\activity_main.xml"
                 qualifiers=""
                 type="layout" />
             <file
                 name="main"
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\menu\main.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\menu\main.xml"
                 qualifiers=""
                 type="menu" />
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\dimens.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\dimens.xml"
                 qualifiers="" >
                 <dimen name="activity_horizontal_margin" >16dp
                 </dimen>
@@ -42,7 +42,7 @@
                 </dimen>
             </file>
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\strings.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\strings.xml"
                 qualifiers="" >
                 <string name="action_settings" >Settings
                 </string>
@@ -54,7 +54,7 @@
                 </string>
             </file>
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\styles.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values\styles.xml"
                 qualifiers="" >
 
                 <style
@@ -76,13 +76,13 @@
                 </style>
             </file>
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-sw720dp-land\dimens.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-sw720dp-land\dimens.xml"
                 qualifiers="sw720dp-land-v13" >
                 <dimen name="activity_horizontal_margin" >128dp
                 </dimen>
             </file>
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-v11\styles.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-v11\styles.xml"
                 qualifiers="v11" >
 
                 <style
@@ -93,7 +93,7 @@
                 </style>
             </file>
             <file
-                path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-v14\styles.xml"
+                path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\main\res\values-v14\styles.xml"
                 qualifiers="v14" >
 
                 <style
@@ -104,11 +104,11 @@
                 </style>
             </file>
         </source>
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\build\generated\res\rs\debug" />
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\build\generated\res\generated\debug" />
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\build\generated\res\rs\debug" />
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\build\generated\res\generated\debug" />
     </dataSet>
     <dataSet config="debug" >
-        <source path="D:\ChandraPersonal\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\debug\res" />
+        <source path="C:\Users\Chandra\Documents\GitHub\VideoExtractionAndroidApp\Audio-X-Gradle\app\src\debug\res" />
     </dataSet>
 
 </merger>

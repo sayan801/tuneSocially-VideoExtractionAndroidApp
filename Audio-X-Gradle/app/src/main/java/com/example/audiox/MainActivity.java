@@ -359,14 +359,6 @@ import android.widget.Toast;
          if (outputFile.exists())
              outputFile.delete();
 
-         MediaMuxer mux = new MediaMuxer(outputFile.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
-
-         MediaFormat outputFormat = MediaFormat.createAudioFormat(COMPRESSED_AUDIO_FILE_MIME_TYPE,SAMPLING_RATE, 1);
-         outputFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
-         outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, COMPRESSED_AUDIO_FILE_BIT_RATE);
-
-         int audioTrackIdx = mux.addTrack(outputFormat);
-         mux.start();
 
          for (int i = 0; i < numTracks; ++i) {
 
@@ -374,10 +366,24 @@ import android.widget.Toast;
              COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
 
              if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
+
+                 MediaMuxer mux = new MediaMuxer(outputFile.getAbsolutePath(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
+
                  //COMPRESSED_AUDIO_FILE_BIT_RATE = format.getInteger(MediaFormat.KEY_BIT_RATE);
                  SAMPLING_RATE = format.getInteger(MediaFormat.KEY_SAMPLE_RATE);
                  channels = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT);
                  duration = format.getLong(MediaFormat.KEY_DURATION);
+
+
+                 MediaFormat outputFormat = MediaFormat.createAudioFormat(COMPRESSED_AUDIO_FILE_MIME_TYPE, SAMPLING_RATE, 1);
+                 outputFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, MediaCodecInfo.CodecProfileLevel.AACObjectLC);
+                 outputFormat.setInteger(MediaFormat.KEY_BIT_RATE, COMPRESSED_AUDIO_FILE_BIT_RATE);
+
+                 int audioTrackIdx = mux.addTrack(outputFormat);
+                 mux.start();
+
+
+
 
                  extractor.selectTrack(i);
 
@@ -398,7 +404,7 @@ import android.widget.Toast;
 
                  codec.configure(format, null, null, 0);
                  codec.start();
-                 ByteBuffer[] codecInputBuffers  = codec.getInputBuffers();
+                 ByteBuffer[] codecInputBuffers = codec.getInputBuffers();
                  ByteBuffer[] codecOutputBuffers = codec.getOutputBuffers();
 
                  // configure AudioTrack
@@ -423,7 +429,7 @@ import android.widget.Toast;
                  boolean stop = false;
                  long presentationTimeUs = 0;
 
-                // state.set(PlayerStates.PLAYING);
+                 // state.set(PlayerStates.PLAYING);
                  while (!sawOutputEOS && noOutputCounter < noOutputCounterLimit && !stop) {
 
 
@@ -440,7 +446,7 @@ import android.widget.Toast;
                                  sampleSize = 0;
                              } else {
                                  presentationTimeUs = extractor.getSampleTime();
-                                 final int percent =  (duration == 0)? 0 : (int) (100 * presentationTimeUs / duration);
+                                 final int percent = (duration == 0) ? 0 : (int) (100 * presentationTimeUs / duration);
                                  Log.d(TAG, "percent " + percent + " presentationTimeUs " + presentationTimeUs);
                              }
 
@@ -449,7 +455,7 @@ import android.widget.Toast;
                              if (!sawInputEOS) extractor.advance();
 
                          } else {
-                             Log.e(TAG, "inputBufIndex " +inputBufIndex);
+                             Log.e(TAG, "inputBufIndex " + inputBufIndex);
                          }
                      } // !sawInputEOS
 
@@ -457,7 +463,7 @@ import android.widget.Toast;
                      int res = codec.dequeueOutputBuffer(info, kTimeOutUs);
 
                      if (res >= 0) {
-                         if (info.size > 0)  noOutputCounter = 0;
+                         if (info.size > 0) noOutputCounter = 0;
 
                          int outputBufIndex = res;
                          //ByteBuffer buf = codecOutputBuffers[outputBufIndex];
@@ -489,7 +495,7 @@ import android.widget.Toast;
 
                  Log.d(TAG, "stopping...");
 
-                 if(codec != null) {
+                 if (codec != null) {
                      codec.stop();
                      codec.release();
                      codec = null;
@@ -505,11 +511,9 @@ import android.widget.Toast;
                  sampleRate = 0; channels = 0; bitrate = 0;
                  presentationTimeUs = 0; duration = 0;
                  */
+                 mux.stop();
+                 mux.release();
              }
-
-             mux.stop();
-             mux.release();
-
              String audioInfo = "Track info: mime:" + COMPRESSED_AUDIO_FILE_MIME_TYPE + " sampleRate:" + SAMPLING_RATE + "" +
                      " channels:" + channels + " bitrate:" + COMPRESSED_AUDIO_FILE_BIT_RATE + " duration:" + duration;
              Log.d(TAG, audioInfo);

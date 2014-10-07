@@ -17,6 +17,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaCodec;
 import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.media.MediaExtractor;
 import android.media.MediaFormat;
 import android.media.MediaMuxer;
@@ -586,6 +587,219 @@ import android.widget.Toast;
         return suc;
     }
 
+/*
+    // parameters for the video encoder
+    private static final String OUTPUT_VIDEO_MIME_TYPE = "video/avc"; // H.264 Advanced Video Coding
+    private static final String OUTPUT_AUDIO_MIME_TYPE = "audio/mp4a-latm"; // Advanced Audio Coding
 
-
+    private void extractDecodeEditEncodeMux() throws Exception {
+        // Exception that may be thrown during release.
+        Exception exception = null;
+        MediaCodecInfo videoCodecInfo = selectCodec(OUTPUT_VIDEO_MIME_TYPE);
+        if (videoCodecInfo == null) {
+            // Don't fail CTS if they don't have an AVC codec (not here, anyway).
+            Log.e(TAG, "Unable to find an appropriate codec for " + OUTPUT_VIDEO_MIME_TYPE);
+            return;
+        }
+        if (VERBOSE) Log.d(TAG, "video found codec: " + videoCodecInfo.getName());
+        MediaCodecInfo audioCodecInfo = selectCodec(OUTPUT_AUDIO_MIME_TYPE);
+        if (audioCodecInfo == null) {
+            // Don't fail CTS if they don't have an AAC codec (not here, anyway).
+            Log.e(TAG, "Unable to find an appropriate codec for " + OUTPUT_AUDIO_MIME_TYPE);
+            return;
+        }
+        if (VERBOSE) Log.d(TAG, "audio found codec: " + audioCodecInfo.getName());
+        MediaExtractor videoExtractor = null;
+        MediaExtractor audioExtractor = null;
+        OutputSurface outputSurface = null;
+        MediaCodec videoDecoder = null;
+        MediaCodec audioDecoder = null;
+        MediaCodec videoEncoder = null;
+        MediaCodec audioEncoder = null;
+        MediaMuxer muxer = null;
+        InputSurface inputSurface = null;
+        try {
+            if (mCopyVideo) {
+                videoExtractor = createExtractor();
+                int videoInputTrack = getAndSelectVideoTrackIndex(videoExtractor);
+                assertTrue("missing video track in test video", videoInputTrack != -1);
+                MediaFormat inputFormat = videoExtractor.getTrackFormat(videoInputTrack);
+                // We avoid the device-specific limitations on width and height by using values
+                // that are multiples of 16, which all tested devices seem to be able to handle.
+                MediaFormat outputVideoFormat =
+                        MediaFormat.createVideoFormat(OUTPUT_VIDEO_MIME_TYPE, mWidth, mHeight);
+                // Set some properties. Failing to specify some of these can cause the MediaCodec
+                // configure() call to throw an unhelpful exception.
+                outputVideoFormat.setInteger(
+                        MediaFormat.KEY_COLOR_FORMAT, OUTPUT_VIDEO_COLOR_FORMAT);
+                outputVideoFormat.setInteger(MediaFormat.KEY_BIT_RATE, OUTPUT_VIDEO_BIT_RATE);
+                outputVideoFormat.setInteger(MediaFormat.KEY_FRAME_RATE, OUTPUT_VIDEO_FRAME_RATE);
+                outputVideoFormat.setInteger(
+                        MediaFormat.KEY_I_FRAME_INTERVAL, OUTPUT_VIDEO_IFRAME_INTERVAL);
+                if (VERBOSE) Log.d(TAG, "video format: " + outputVideoFormat);
+                // Create a MediaCodec for the desired codec, then configure it as an encoder with
+                // our desired properties. Request a Surface to use for input.
+                AtomicReference<Surface> inputSurfaceReference = new AtomicReference<Surface>();
+                videoEncoder = createVideoEncoder(
+                        videoCodecInfo, outputVideoFormat, inputSurfaceReference);
+                inputSurface = new InputSurface(inputSurfaceReference.get());
+                inputSurface.makeCurrent();
+                // Create a MediaCodec for the decoder, based on the extractor's format.
+                outputSurface = new OutputSurface();
+                outputSurface.changeFragmentShader(FRAGMENT_SHADER);
+                videoDecoder = createVideoDecoder(inputFormat, outputSurface.getSurface());
+            }
+            if (mCopyAudio) {
+                audioExtractor = createExtractor();
+                int audioInputTrack = getAndSelectAudioTrackIndex(audioExtractor);
+                assertTrue("missing audio track in test video", audioInputTrack != -1);
+                MediaFormat inputFormat = audioExtractor.getTrackFormat(audioInputTrack);
+                MediaFormat outputAudioFormat =
+                        MediaFormat.createAudioFormat(
+                                OUTPUT_AUDIO_MIME_TYPE, OUTPUT_AUDIO_SAMPLE_RATE_HZ,
+                                OUTPUT_AUDIO_CHANNEL_COUNT);
+                outputAudioFormat.setInteger(MediaFormat.KEY_BIT_RATE, OUTPUT_AUDIO_BIT_RATE);
+                outputAudioFormat.setInteger(MediaFormat.KEY_AAC_PROFILE, OUTPUT_AUDIO_AAC_PROFILE);
+                // Create a MediaCodec for the desired codec, then configure it as an encoder with
+                // our desired properties. Request a Surface to use for input.
+                audioEncoder = createAudioEncoder(audioCodecInfo, outputAudioFormat);
+                // Create a MediaCodec for the decoder, based on the extractor's format.
+                audioDecoder = createAudioDecoder(inputFormat);
+            }
+            // Creates a muxer but do not start or add tracks just yet.
+            muxer = createMuxer();
+            doExtractDecodeEditEncodeMux(
+                    videoExtractor,
+                    audioExtractor,
+                    videoDecoder,
+                    videoEncoder,
+                    audioDecoder,
+                    audioEncoder,
+                    muxer,
+                    inputSurface,
+                    outputSurface);
+        } finally {
+            if (VERBOSE) Log.d(TAG, "releasing extractor, decoder, encoder, and muxer");
+            // Try to release everything we acquired, even if one of the releases fails, in which
+            // case we save the first exception we got and re-throw at the end (unless something
+            // other exception has already been thrown). This guarantees the first exception thrown
+            // is reported as the cause of the error, everything is (attempted) to be released, and
+            // all other exceptions appear in the logs.
+            try {
+                if (videoExtractor != null) {
+                    videoExtractor.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing videoExtractor", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (audioExtractor != null) {
+                    audioExtractor.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing audioExtractor", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (videoDecoder != null) {
+                    videoDecoder.stop();
+                    videoDecoder.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing videoDecoder", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (outputSurface != null) {
+                    outputSurface.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing outputSurface", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (videoEncoder != null) {
+                    videoEncoder.stop();
+                    videoEncoder.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing videoEncoder", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (audioDecoder != null) {
+                    audioDecoder.stop();
+                    audioDecoder.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing audioDecoder", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (audioEncoder != null) {
+                    audioEncoder.stop();
+                    audioEncoder.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing audioEncoder", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (muxer != null) {
+                    muxer.stop();
+                    muxer.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing muxer", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+            try {
+                if (inputSurface != null) {
+                    inputSurface.release();
+                }
+            } catch(Exception e) {
+                Log.e(TAG, "error while releasing inputSurface", e);
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+        }
+        if (exception != null) {
+            throw exception;
+        }
+    }
+    private static MediaCodecInfo selectCodec(String mimeType) {
+        int numCodecs = MediaCodecList.getCodecCount();
+        for (int i = 0; i < numCodecs; i++) {
+            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(i);
+            if (!codecInfo.isEncoder()) {
+                continue;
+            }
+            String[] types = codecInfo.getSupportedTypes();
+            for (int j = 0; j < types.length; j++) {
+                if (types[j].equalsIgnoreCase(mimeType)) {
+                    return codecInfo;
+                }
+            }
+        }
+        return null;
+    }
+*/
 }

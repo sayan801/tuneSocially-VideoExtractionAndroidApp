@@ -345,12 +345,17 @@ import android.widget.Toast;
         MediaMuxer muxer;
         muxer = new MediaMuxer(dstMediaPath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         // Set up the tracks.
-        HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>(trackCount);
+        int audioTrackIndex = 0;
+        //HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>(trackCount);
         for (int i = 0; i < trackCount; i++) {
             extractor.selectTrack(i);
             MediaFormat format = extractor.getTrackFormat(i);
-            int dstIndex = muxer.addTrack(format);
-            indexMap.put(i, dstIndex);
+            String COMPRESSED_AUDIO_FILE_MIME_TYPE = format.getString(MediaFormat.KEY_MIME);
+
+            if(COMPRESSED_AUDIO_FILE_MIME_TYPE.startsWith("audio/")) {
+                audioTrackIndex = muxer.addTrack(format);
+            }
+            //indexMap.put(i, dstIndex);
         }
         // Copy the samples from MediaExtractor to MediaMuxer.
         boolean sawEOS = false;
@@ -377,8 +382,10 @@ import android.widget.Toast;
                 bufferInfo.presentationTimeUs = extractor.getSampleTime();
                 bufferInfo.flags = extractor.getSampleFlags();
                 int trackIndex = extractor.getSampleTrackIndex();
-                muxer.writeSampleData(indexMap.get(trackIndex), dstBuf,
-                        bufferInfo);
+                if(audioTrackIndex == trackIndex ) {
+                    muxer.writeSampleData(trackIndex, dstBuf,
+                            bufferInfo);
+                }
                 extractor.advance();
                 frameCount++;
                 if (VERBOSE) {
